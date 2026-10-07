@@ -4,6 +4,55 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zippy — The Bionic Arm</title>
+
+<!-- =====================================================================
+     ZIPPY CONFIG  —  EVERYTHING YOU NEED TO PASTE IS IN THIS ONE BLOCK
+     1) ZIPPY_HERO_IMAGE_BASE64 : paste your base64 image between the backticks
+     2) ZIPPY_PAGE_LINKS        : paste each GitHub-hosted page link between the quotes
+     3) ZIPPY_SERIAL_BAUD       : baud rate of your ESP32 serial port
+     ===================================================================== -->
+<script>
+/* ---------- 1) HERO IMAGE (full-size) ----------
+   Paste the base64 text between the two backticks. Either form works:
+     - the full data URI:  data:image/png;base64,iVBORw0KGgo...
+     - or only the raw base64: iVBORw0KGgo...   (type is auto-detected)
+   Leave it empty to keep the current image file. */
+const ZIPPY_HERO_IMAGE_BASE64 = ``;
+
+/* ---------- 2) PAGE LINKS ----------
+   Paste the full link between the quotes, e.g.
+     zippyAssistant: "https://yourname.github.io/zippy-assistant/"
+   - A short form like "yourname.github.io/zippy-assistant" also works.
+   - Each link opens in its own tab. If that page is already open in
+     another tab, Zippy switches to that tab instead of opening a new one.
+   - Empty "" = that button keeps its old behaviour.
+   - "call" can also be a phone link like "tel:+911234567890". */
+const ZIPPY_PAGE_LINKS = {
+  navConnect: "",
+  connectArm: "",
+
+  zippyAssistant: "",
+  computerVision: "",
+  armTracking: "",
+
+  gestureLibrary: "https://arulv123.github.io/gesture-library/",
+  remoteControl: "https://arulv123.github.io/Remote-control-page-zippy-/",
+  voiceCommands: "https://arulv123.github.io/voice-commands/",
+  settings: "",
+
+  findMyDevice: "",
+  health: "",
+  call: "",
+
+  games: "https://arulv123.github.io/Ai-based-rock-paper-sissors/",
+
+  connectYourArm: "",
+  documentation: ""
+};
+
+/* ---------- 3) ESP32 SERIAL PORT ---------- */
+const ZIPPY_SERIAL_BAUD = 115200;
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -1505,6 +1554,23 @@ section{padding:110px 56px !important;}
 .zv-inline-connection.offline .zv-inline-dot{background:var(--rust)}
 @media(max-width:760px){.zv-inline-connection{padding:6px 8px;font-size:8.5px}}
 </style>
+<style>
+/* ---------- ESP32 serial port button (side) ---------- */
+#zippyPortBtn{
+  position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:2000;
+  display:flex;align-items:center;gap:7px;
+  background:var(--paper);color:var(--ink);
+  border:1px solid var(--line-strong);border-right:none;
+  padding:10px 12px;cursor:pointer;
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;
+  box-shadow:-6px 8px 20px -14px rgba(21,24,27,0.4);
+  transition:border-color 0.25s,color 0.25s;
+}
+#zippyPortBtn:hover{border-color:var(--ink);}
+#zippyPortBtn .zp-dot{width:7px;height:7px;border-radius:50%;background:var(--line-strong);flex-shrink:0;}
+#zippyPortBtn.on{color:var(--green);border-color:var(--green);}
+#zippyPortBtn.on .zp-dot{background:var(--green);}
+</style>
 </head>
 <body>
 
@@ -1514,7 +1580,7 @@ section{padding:110px 56px !important;}
   <div class="top-banner-pill" id="topBannerPill">
     <div class="top-banner-sweep"></div>
     <span class="top-banner-dot"></span>
-    <span class="top-banner-text" id="topBannerText">EMG mode <b>deactivated</b></span>
+    <span class="top-banner-text" id="topBannerText">Zippy control <b>ready</b></span>
   </div>
 </div>
 
@@ -1535,15 +1601,15 @@ section{padding:110px 56px !important;}
   <div class="hero-top">
     <div class="hero-grid">
       <div class="hero-text">
-        <div class="doc-tag">EMG-Driven Prosthetic System</div>
+        <div class="doc-tag">AI-Assisted Prosthetic System</div>
         <h1 class="title">
           <span class="fade">Move by</span>
-          <strong class="fade2">muscle signal.</strong>
+          <strong class="fade2">your command.</strong>
         </h1>
         <p class="hero-copy">
-          Zippy reads the electrical signature of your own muscles and turns it into
-          coordinated motion — six finger and wrist motors, four limb motors, one
-          continuous line from nerve to hand.
+          Zippy is driven from a single web page with a powerful AI assistant behind it.
+          IR sensors monitor every joint angle and approximate health tracking keeps watch —
+          six finger and wrist motors, four limb motors, one continuous line from command to hand.
         </p>
         <div class="hero-actions">
           <a href="#overview" class="btn-primary">Explore the Build</a>
@@ -1552,8 +1618,8 @@ section{padding:110px 56px !important;}
         <div class="hero-meta">
           <div class="hm-item"><div class="hm-num">10</div><div class="hm-label">Total Motors</div></div>
           <div class="hm-item"><div class="hm-num">C++</div><div class="hm-label">Firmware</div></div>
-          <div class="hm-item"><div class="hm-num">EMG</div><div class="hm-label">Input Signal</div></div>
-          <div class="hm-item"><div class="hm-num">GPS</div><div class="hm-label">Safety Layer</div></div>
+          <div class="hm-item"><div class="hm-num">AI</div><div class="hm-label">Web Control</div></div>
+          <div class="hm-item"><div class="hm-num">IP</div><div class="hm-label">Approx. Location</div></div>
         </div>
       </div>
       <div class="blueprint">
@@ -1586,12 +1652,12 @@ section{padding:110px 56px !important;}
       <p>
         Zippy is an intelligent assistive robotic prosthetic developed for individuals
         with limb loss or reduced arm function. It combines embedded systems, custom
-        electronics, and purpose-built software into a single limb capable of reading
-        human intent directly from muscle activity.
+        electronics, and purpose-built software into a single limb capable of acting on
+        human intent through full webpage control and AI assistance.
       </p>
       <p>
-        At its core is an <strong>ESPDEV module</strong> that interprets signals from a
-        <strong>BioAmp EMG sensor</strong> and gyroscopic sensors in real time, translating
+        At its core is an <strong>ESPDEV module</strong> that interprets commands from the web page and
+        <strong>IR angle-monitoring sensors</strong> in real time, translating
         them into coordinated movement across the hand, wrist, and arm.
       </p>
       <div class="stat-block">
@@ -1607,19 +1673,19 @@ section{padding:110px 56px !important;}
 <section id="system">
   <div class="section-head reveal">
     <span class="tag-label">02 — System Architecture</span>
-    <h2>From <strong>muscle</strong> to <strong>motion</strong>, mapped.</h2>
+    <h2>From <strong>command</strong> to <strong>motion</strong>, mapped.</h2>
     <p class="section-sub">Every component in Zippy exists to move a signal one step closer to intent — sensing, deciding, then acting.</p>
   </div>
   <div class="arch-list reveal">
     <div class="arch-item">
       <div class="arch-index">01</div>
-      <div class="arch-name">Signal Sensing<small>BioAmp EMG + Gyro</small></div>
-      <div class="arch-desc">A BioAmp EMG sensor reads electrical activity from residual muscle tissue, while gyroscopic sensors track limb orientation — together forming the raw input layer.</div>
+      <div class="arch-name">Angle Sensing<small>IR Monitoring</small></div>
+      <div class="arch-desc">IR sensors monitor joint and limb angles, while the web page and AI assistant supply the commands — together forming the input layer.</div>
     </div>
     <div class="arch-item">
       <div class="arch-index">02</div>
       <div class="arch-name">Processing Core<small>ESPDEV Module</small></div>
-      <div class="arch-desc">The ESPDEV module runs C++ firmware that filters and interprets incoming EMG signals, converting muscle activity into structured motor commands in real time.</div>
+      <div class="arch-desc">The ESPDEV module runs C++ firmware that filters IR angle readings and interprets web commands, converting them into structured motor commands in real time.</div>
     </div>
     <div class="arch-item">
       <div class="arch-index">03</div>
@@ -1628,8 +1694,8 @@ section{padding:110px 56px !important;}
     </div>
     <div class="arch-item">
       <div class="arch-index">04</div>
-      <div class="arch-name">Power & Safety<small>Custom BMS + GPS</small></div>
-      <div class="arch-desc">A rechargeable battery pack with a custom Battery Management System supplies safe, reliable power, while an integrated GPS module adds a layer of user safety and location awareness.</div>
+      <div class="arch-name">Power & Safety<small>Custom BMS + WiFi IP</small></div>
+      <div class="arch-desc">A rechargeable battery pack with a custom Battery Management System supplies safe, reliable power, while the arm's WiFi IP address gives an approximate location, adding a layer of user safety and awareness.</div>
     </div>
   </div>
 </section>
@@ -1641,7 +1707,7 @@ section{padding:110px 56px !important;}
   </div>
   <div class="flow-wrap reveal">
     <div class="flow-row">
-      <div class="flow-node"><div class="fn-index">STEP 01</div><div class="fn-icon">EMG</div><div class="fn-label">Muscle Signal</div><div class="fn-sub">bioamp input</div></div>
+      <div class="flow-node"><div class="fn-index">STEP 01</div><div class="fn-icon">IR</div><div class="fn-label">Angle Signal</div><div class="fn-sub">ir monitoring</div></div>
       <div class="flow-arrow">→</div>
       <div class="flow-node"><div class="fn-index">STEP 02</div><div class="fn-icon">μC</div><div class="fn-label">ESPDEV Core</div><div class="fn-sub">c++ interpretation</div></div>
       <div class="flow-arrow">→</div>
@@ -1659,13 +1725,14 @@ section{padding:110px 56px !important;}
   </div>
   <table class="specs-table reveal">
     <tr><td>Control Unit</td><td>ESPDEV microcontroller module</td></tr>
-    <tr><td>Input Sensing</td><td>BioAmp EMG sensor + gyroscopic orientation sensors</td></tr>
+    <tr><td>Input Sensing</td><td>IR sensors for joint-angle monitoring + web and AI commands</td></tr>
     <tr><td>Hand & Wrist Actuation</td><td>6× MG996R servo motors</td></tr>
     <tr><td>Arm & Shoulder Actuation</td><td>4× high-torque motors (bicep, shoulder, arm)</td></tr>
     <tr><td>Power System</td><td>Rechargeable battery pack with custom BMS</td></tr>
     <tr><td>Firmware</td><td>C++, signal-to-motion interpretation</td></tr>
-    <tr><td>Safety</td><td>Integrated GPS module for location awareness</td></tr>
-    <tr><td>Companion App</td><td>Gesture selection, remote control, voice commands, monitoring</td></tr>
+    <tr><td>Safety</td><td>Approximate location from the arm's WiFi IP address</td></tr>
+    <tr><td>Health</td><td>Approximate health tracking</td></tr>
+    <tr><td>Companion App</td><td>Gesture selection, full webpage control, AI assistant, voice commands, monitoring</td></tr>
   </table>
 </section>
 
@@ -1679,13 +1746,15 @@ section{padding:110px 56px !important;}
         <li><strong>Gesture selection</strong> — choose and save preset grip and motion patterns.</li>
         <li><strong>Remote control</strong> — assist or adjust the arm's response from a paired device.</li>
         <li><strong>Voice commands</strong> — trigger specific movements hands-free.</li>
-        <li><strong>User monitoring</strong> — track signal activity, battery health, and usage over time.</li>
+        <li><strong>Full webpage control</strong> — drive every function of the arm from one web page.</li>
+        <li><strong>AI assistance</strong> — a powerful assistant that helps operate and troubleshoot the arm.</li>
+        <li><strong>User monitoring</strong> — track IR angle readings, approximate health, battery health, and usage over time.</li>
       </ul>
     </div>
     <div class="roadmap-card reveal">
       <span class="rm-tag">Live in current build</span>
       <h3>Signal-to-app sync</h3>
-      <p>EMG readings and motor state stream to the companion app in real time, giving users and caregivers direct visibility into how the arm is responding — and a way to fine-tune it.</p>
+      <p>IR angle readings and motor state stream to the companion app in real time, giving users and caregivers direct visibility into how the arm is responding — and a way to fine-tune it.</p>
     </div>
   </div>
 </section>
@@ -1726,7 +1795,7 @@ section{padding:110px 56px !important;}
     <div class="roadmap-card reveal">
       <span class="rm-tag">In development</span>
       <h3>EEG integration</h3>
-      <p>Brain-signal input is being explored as a second control channel, layered on top of EMG for finer, more intuitive command over the arm.</p>
+      <p>Brain-signal input is being explored as a second control channel, layered on top of the existing controls for finer, more intuitive command over the arm.</p>
     </div>
     <div class="reveal">
       <span class="tag-label">07 — What's Next</span>
@@ -1982,6 +2051,21 @@ section{padding:110px 56px !important;}
             <div class="dash-app-title">Health</div>
           </a>
 
+          <a class="dash-app-card" href="#" id="callFabCard" onclick="return false;">
+            <div class="dash-app-icon"><svg viewBox="0 0 24 24" width="38" height="38" stroke="#15181b" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></div>
+            <div class="dash-app-title">Call</div>
+          </a>
+
+        </div>
+
+        <div class="dash-section-label">Fun</div>
+        <div class="dash-apps-grid">
+
+          <a class="dash-app-card" href="#" id="gamesFabCard" onclick="return false;">
+            <div class="dash-app-icon"><svg viewBox="0 0 24 24" width="38" height="38" stroke="#15181b" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="6"/><path d="M6.5 12h4M8.5 10v4"/><circle cx="15.5" cy="11" r=".7"/><circle cx="17.7" cy="13" r=".7"/></svg></div>
+            <div class="dash-app-title">Games</div>
+          </a>
+
         </div>
 
     </div>
@@ -2073,28 +2157,7 @@ const db   = firebase.database();
    localStorage before moving to another page. Firebase Auth
    and the verified device code are also left intact.
    ============================================================ */
-/* >>>>>>>> PUT YOUR PAGE LINKS HERE (between the quotes) <<<<<<<<
-   Empty "" = button keeps its old behaviour. Filled = opens that page
-   and keeps the login + device code + status. */
-const ZIPPY_PAGE_LINKS = {
-  navConnect: "",
-  connectArm: "",
-
-  zippyAssistant: "",
-  computerVision: "",
-  armTracking: "",
-
-  gestureLibrary: "gesture-library.html",
-  remoteControl: "",
-  voiceCommands: "",
-  settings: "",
-
-  findMyDevice: "",
-  health: "",
-
-  connectYourArm: "",
-  documentation: ""
-};
+/* PAGE LINKS now live in the ZIPPY CONFIG block at the very top of this file. */
 
 const ZIPPY_PAGE_STATE_KEY = "zippyCrossPageState_v1";
 
@@ -2164,8 +2227,10 @@ window.ZippyPageState = {
 };
 
 function zippyResolveLink(key){
-  const raw = ZIPPY_PAGE_LINKS[key];
+  let raw = (ZIPPY_PAGE_LINKS[key] || "").trim();
   if (!raw || raw === "#") return "";
+  if (/^(www\.)?[\w-]+\.github\.io/i.test(raw)) raw = "https://" + raw;
+  if (/^(tel|mailto|sms):/i.test(raw)) return raw;
   try {
     return new URL(raw, location.href).href;
   } catch (err) {
@@ -2183,8 +2248,21 @@ function zippyNavigate(key, event){
   }
 
   saveZippyPageState(key);
-  window.location.href = target;
+  zippyOpenInTab(key, target);
   return true;
+}
+
+/* Opens the page in its own named tab. If that tab is already open it is
+   just brought to the front (no second tab, no reload). */
+function zippyOpenInTab(key, target){
+  if (/^(tel|mailto|sms):/i.test(target)) { window.location.href = target; return; }
+  let w = null;
+  try { w = window.open("", "zippy_tab_" + key); } catch (err) {}
+  if (!w) { window.location.href = target; return; }   // popup blocked -> same tab
+  let fresh = false;
+  try { fresh = (w.location.href === "about:blank"); } catch (err) { fresh = false; } // cross-origin = already loaded
+  if (fresh) { w.location.href = target; }
+  try { w.focus(); } catch (err) {}
 }
 
 /* ---------- Status heartbeat helper ----------
@@ -2223,6 +2301,13 @@ function _serverNow(){ return Date.now() + _serverOffset; }
 //     stops changing for 35s it flips to Offline. No free grace on load.
 //  3. plain "online" string, no ts -> cannot be proven alive, so Offline.
 function isDeviceStatusOnline(data, code){
+  // Online / Offline now follows the ESP32 serial port (side "Port" button).
+  // If the browser has no Web Serial support, the old heartbeat logic below is used.
+  if (window.ZippySerial && window.ZippySerial.supported) {
+    if (!window.ZippySerial.isConnected()) { delete _heartbeatSeenAt[code]; return false; }
+    _heartbeatSeenAt[code] = { ts: 0, at: window.ZippySerial.lastActivity() || Date.now() };
+    return true;
+  }
   const st = data ? data.status : null;
   const state = (st && typeof st === 'object') ? st.state : st;
   if (state !== 'online') { delete _heartbeatSeenAt[code]; return false; }
@@ -2405,7 +2490,7 @@ let pollTimer = null;
 // we know which device this browser belongs to — either instantly below
 // if the person was already verified last session, or right after they
 // finish signing in (see the STEP 2 handler and onAuthStateChanged below).
-showBanner('EMG mode <b>deactivated</b>', false);
+showBanner('Zippy control <b>ready</b>', false);
 
 function setState(name){
   states.forEach(s => s.classList.toggle('active', s.dataset.state === name));
@@ -2657,6 +2742,8 @@ const ZIPPY_CARD_NAV = {
   qtVoiceFabCard: "voiceCommands",
   settings: "settings",
   health: "health",
+  callFabCard: "call",
+  gamesFabCard: "games",
   connectYourArm: "connectYourArm",
   documentation: "documentation"
 };
@@ -3227,6 +3314,142 @@ window.addEventListener("pagehide", () => {
     if(audioContext){audioContext.close().catch(()=>{});audioContext=null}
     clearInterval(inlineStatusTimer);
   });
+})();
+</script>
+<button id="zippyPortBtn" type="button" title="Select ESP32 port"><span class="zp-dot"></span><span id="zippyPortLabel">Port</span></button>
+
+<script>
+/* ================= ESP32 SERIAL PORT (Web Serial) =================
+   Click the side "Port" button -> pick the ESP32 port. While the port is
+   open the arm shows Online; unplug / close it and it shows Offline.
+   Click again while connected to disconnect. Needs Chrome / Edge (desktop). */
+(function(){
+  const btn = document.getElementById('zippyPortBtn');
+  const label = document.getElementById('zippyPortLabel');
+  const supported = ('serial' in navigator);
+  const INFO_KEY = 'zippySerialPortInfo';
+  const BAUD = (typeof ZIPPY_SERIAL_BAUD === 'number') ? ZIPPY_SERIAL_BAUD : 115200;
+
+  let port = null, reader = null, loop = null, connected = false, lastActivity = 0;
+
+  window.ZippySerial = {
+    supported: supported,
+    isConnected: () => connected,
+    lastActivity: () => lastActivity
+  };
+
+  function refreshStatus(){
+    try {
+      if (typeof currentUserCode !== 'undefined' && currentUserCode) {
+        db.ref('users/' + currentUserCode).once('value')
+          .then(s => renderDeviceStatus(s.val(), currentUserCode)).catch(() => {});
+      }
+    } catch (e) {}
+  }
+  function setConnected(v){
+    connected = v;
+    btn.classList.toggle('on', v);
+    label.textContent = v ? 'Port · On' : 'Port';
+    btn.title = v ? 'ESP32 port connected — click to disconnect' : 'Select ESP32 port';
+    refreshStatus();
+  }
+
+  async function readLoop(p){
+    while (p.readable && port === p) {
+      reader = p.readable.getReader();
+      try {
+        while (true) {
+          const r = await reader.read();
+          if (r.done) break;
+          if (r.value && r.value.length) lastActivity = Date.now();
+        }
+      } catch (e) { /* unplugged or errored */ }
+      finally { try { reader.releaseLock(); } catch (e) {} reader = null; }
+    }
+    if (port === p) {            // lost without the user asking
+      try { await p.close(); } catch (e) {}
+      port = null;
+      setConnected(false);
+    }
+  }
+
+  async function openPort(p){
+    await p.open({ baudRate: BAUD });
+    try { await p.setSignals({ dataTerminalReady: false, requestToSend: false }); } catch (e) {}
+    try { localStorage.setItem(INFO_KEY, JSON.stringify(p.getInfo ? p.getInfo() : {})); } catch (e) {}
+    port = p;
+    lastActivity = Date.now();
+    setConnected(true);
+    loop = readLoop(p);
+  }
+
+  async function disconnect(){
+    const p = port;
+    if (!p) return;
+    port = null;
+    try { if (reader) await reader.cancel(); } catch (e) {}
+    try { if (loop) await loop; } catch (e) {}
+    try { await p.close(); } catch (e) {}
+    setConnected(false);
+  }
+
+  btn.addEventListener('click', async () => {
+    if (!supported) {
+      showBanner('Port select needs <b>Chrome or Edge</b> on desktop', false, 3600);
+      return;
+    }
+    if (connected) {
+      await disconnect();
+      showBanner('ESP32 port <b>disconnected</b>', false, 2400);
+      return;
+    }
+    try {
+      const p = await navigator.serial.requestPort();
+      await openPort(p);
+      showBanner('ESP32 port <b>connected</b>', true, 2400);
+    } catch (e) {
+      if (e && e.name !== 'NotFoundError') showBanner('Could not open port — <b>is it in use?</b>', false, 3400);
+    }
+  });
+
+  if (!supported) return;
+
+  // Re-open a previously allowed port automatically (page reload / replug).
+  function matchesSaved(p){
+    try {
+      const saved = JSON.parse(localStorage.getItem(INFO_KEY) || '{}');
+      const info = p.getInfo ? p.getInfo() : {};
+      if (!saved.usbVendorId) return true;
+      return saved.usbVendorId === info.usbVendorId && saved.usbProductId === info.usbProductId;
+    } catch (e) { return true; }
+  }
+  async function autoOpen(candidates){
+    if (connected) return;
+    for (const p of candidates) {
+      if (!matchesSaved(p)) continue;
+      try { await openPort(p); return; } catch (e) {}
+    }
+  }
+  navigator.serial.getPorts().then(autoOpen).catch(() => {});
+  navigator.serial.addEventListener('connect', e => { autoOpen([e.target]); });
+  navigator.serial.addEventListener('disconnect', e => {
+    if (e.target === port) { const p = port; port = null; try { p.close(); } catch (x) {} setConnected(false); }
+  });
+})();
+
+/* ================= HERO IMAGE (base64 from the config block) ================= */
+(function(){
+  let data = (typeof ZIPPY_HERO_IMAGE_BASE64 === 'string') ? ZIPPY_HERO_IMAGE_BASE64.replace(/\s+/g, '') : '';
+  if (!data) return;
+  if (!/^data:/i.test(data)) {
+    let mime = 'image/png';
+    if (data.startsWith('/9j/')) mime = 'image/jpeg';
+    else if (data.startsWith('UklG')) mime = 'image/webp';
+    else if (data.startsWith('R0lG')) mime = 'image/gif';
+    data = 'data:' + mime + ';base64,' + data;
+  }
+  const img = document.querySelector('.bp-img-wrap img');
+  if (img) img.src = data;
 })();
 </script>
 </body>
